@@ -852,7 +852,7 @@ TextMesh:
   m_Font: {fileID: 12800000, guid: 3d2e2ed63c7a0ed4cb4a7a6d1661e19e, type: 3}
   m_Color:
     serializedVersion: 2
-    rgba: 4278190149
+    rgba: 4278255921
 --- !u!102 &102974710424941998
 TextMesh:
   serializedVersion: 3
@@ -1005,7 +1005,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/Diffuse
+  - KT/Unlit/TransparentVertexColorUnderlay30
 --- !u!114 &114312123774317404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1185,7 +1185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/Diffuse
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114956604538970874
 MonoBehaviour:
   m_ObjectHideFlags: 1

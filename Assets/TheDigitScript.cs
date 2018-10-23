@@ -180,9 +180,9 @@ public class TheDigitScript : MonoBehaviour
         int numberOfCycles = 0;
         int initialScreenTxt = DisplayedNumber;
         interactable = false;
-        while(numberOfCycles != 50)
+        while (numberOfCycles != 60)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.093f);
             ScreenText.text = Random.Range(0, 10).ToString();
             numberOfCycles++;
         }
