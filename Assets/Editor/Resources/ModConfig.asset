@@ -13,7 +13,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: TheDigitModule
   title: The Digit
-  description: "\t\t"
+  description: "Only one number? Easy!\r\n\r\nIdeas by: Danny7007\r\nCreated and impelemented
+    by: Marksam32\r\nTwitch plays is supported.\r\n\r\nManual:\r\nPDF: https://ktane.timwi.de/PDF/The%20Digit.pdf\r\nHTML:
+    https://ktane.timwi.de/HTML/The%20Digit.html\r\n\r\nModule id: TheDigitModule\r\nGithub:
+    https://github.com/marksam32/ktaneTheDigit\r\n\r\nIf you want to report any bugs
+    or typos in the manual or in the module, please contact me on discord: Marksam32#2748\r"
   version: 1.0
   outputFolder: build
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 2800000, guid: ee5f1f66129f8af4b91ddbd97d62fcb5, type: 3}
