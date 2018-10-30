@@ -27,6 +27,10 @@ public class TheDigitScript : MonoBehaviour
 
     private static readonly Regex SetRegEx = new Regex("^submit (\\d)$");
 
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = "To submit an answer, do: !{0} submit #";
+#pragma warning restore 414
+
 
     // Use this for initialization
     void Start ()
