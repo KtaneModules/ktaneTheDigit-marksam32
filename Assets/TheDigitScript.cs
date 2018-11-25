@@ -97,8 +97,8 @@ public class TheDigitScript : MonoBehaviour
             }
             else if (this.DisplayedNumber == this.CalculatedNumber)
             {
-                StartCoroutine(Solve());
                 this.isSolved = true;
+                StartCoroutine(Solve());
             }
             else
             {
@@ -173,6 +173,14 @@ public class TheDigitScript : MonoBehaviour
             {
                 yield return null;
                 ScreenBtn.OnInteract();
+                if(isSolved == true)
+                {
+                    yield return "solve";
+                }
+                else
+                {
+                    yield return "strike";
+                }
                 yield break;
             }
         }
