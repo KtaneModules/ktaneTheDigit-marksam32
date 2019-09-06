@@ -191,11 +191,18 @@ public class TheDigitScript : MonoBehaviour
     {
         int numberOfCycles = 0;
         int initialScreenTxt = DisplayedNumber;
+        int screentxt;
         interactable = false;
         while (numberOfCycles != 60)
         {
             yield return new WaitForSeconds(0.093f);
-            ScreenText.text = Random.Range(0, 10).ToString();
+            retry:
+            screentxt = Random.Range(0, 10);
+            if(screentxt.ToString() == ScreenText.text)
+            {
+                goto retry;
+            }
+            ScreenText.text = screentxt.ToString();
             numberOfCycles++;
         }
         if(this.isSolved == true)
