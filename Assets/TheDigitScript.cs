@@ -140,7 +140,11 @@ public class TheDigitScript : MonoBehaviour
 
         this.CalculatedNumber -= 3;
         Debug.LogFormat("[The Digit #{1}] Stage 6: The Number is now {0}", CalculatedNumber, _moduleId);
-        this.CalculatedNumber *= this.Info.GetPortCount();
+        if(Info.GetPortCount() >= 1)
+        {
+            this.CalculatedNumber *= this.Info.GetPortCount();
+        }
+
         Debug.LogFormat("[The Digit #{1}] Stage 7: The Number is now {0}", CalculatedNumber, _moduleId);
         this.CalculatedNumber += this.Info.GetOnIndicators().Count();
         Debug.LogFormat("[The Digit #{1}] Stage 8: The Number is now {0}", CalculatedNumber, _moduleId);
