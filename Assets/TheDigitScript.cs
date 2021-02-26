@@ -18,7 +18,8 @@ public class TheDigitScript : MonoBehaviour
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
-    private bool isSolved = false;
+    private bool isSolved;
+    private bool solveAnimationDone;
 
     private int DisplayedNumber;
     private int CalculatedNumber;
@@ -33,7 +34,7 @@ public class TheDigitScript : MonoBehaviour
 
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         _moduleId = _moduleIdCounter++;
         Module.OnActivate += Activate;
@@ -49,10 +50,11 @@ public class TheDigitScript : MonoBehaviour
         {
             Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, UpBtn.transform);
             UpBtn.AddInteractionPunch();
-            if(this.isSolved|| !interactable)
+            if (this.isSolved | !interactable)
             {
                 return false;
             }
+
             if (this.DisplayedNumber == 9)
             {
                 DisplayedNumber = 0;
@@ -63,6 +65,7 @@ public class TheDigitScript : MonoBehaviour
                 DisplayedNumber += 1;
                 this.ScreenText.text = this.DisplayedNumber.ToString();
             }
+
             return false;
         };
 
@@ -74,6 +77,7 @@ public class TheDigitScript : MonoBehaviour
             {
                 return false;
             }
+
             if (this.DisplayedNumber == 0)
             {
                 DisplayedNumber = 9;
@@ -84,6 +88,7 @@ public class TheDigitScript : MonoBehaviour
                 DisplayedNumber -= 1;
                 this.ScreenText.text = this.DisplayedNumber.ToString();
             }
+
             return false;
         };
 
@@ -104,6 +109,7 @@ public class TheDigitScript : MonoBehaviour
             {
                 StartCoroutine(Solve());
             }
+
             return false;
         };
     }
@@ -117,6 +123,7 @@ public class TheDigitScript : MonoBehaviour
         {
             CalculatedNumber += Info.GetSerialNumberLetters().Count();
         }
+
         Debug.LogFormat("[The Digit #{1}] Stage 2: The number is now {0}", CalculatedNumber, _moduleId);
 
         if (this.CalculatedNumber % 2 == 0)
@@ -128,6 +135,7 @@ public class TheDigitScript : MonoBehaviour
         {
             this.CalculatedNumber *= 2;
         }
+
         Debug.LogFormat("[The Digit #{1}] Stage 3: The number is now {0}", CalculatedNumber, _moduleId);
 
         this.CalculatedNumber -= this.Info.GetPortPlateCount();
@@ -136,11 +144,12 @@ public class TheDigitScript : MonoBehaviour
         {
             this.CalculatedNumber += 5;
         }
+
         Debug.LogFormat("[The Digit #{1}] Stage 5: The Number is now {0}", CalculatedNumber, _moduleId);
 
         this.CalculatedNumber -= 3;
         Debug.LogFormat("[The Digit #{1}] Stage 6: The Number is now {0}", CalculatedNumber, _moduleId);
-        if(Info.GetPortCount() >= 1)
+        if (Info.GetPortCount() >= 1)
         {
             this.CalculatedNumber *= this.Info.GetPortCount();
         }
@@ -152,12 +161,14 @@ public class TheDigitScript : MonoBehaviour
         {
             this.CalculatedNumber *= -1;
         }
+
         Debug.LogFormat("[The Digit #{1}] Stage 9: The Number is now {0}", CalculatedNumber, _moduleId);
 
         while (this.CalculatedNumber > 9)
         {
             this.CalculatedNumber -= 10;
         }
+
         Debug.LogFormat("[The Digit #{1}] The Final number is: {0}", CalculatedNumber, _moduleId);
     }
 
@@ -167,36 +178,39 @@ public class TheDigitScript : MonoBehaviour
         var match = SetRegEx.Match(command);
         if (match.Success)
         {
+            yield return null;
             while (DisplayedNumber != int.Parse(match.Groups[1].Value))
             {
-                yield return null;
                 UpBtn.OnInteract();
                 yield return new WaitForSeconds(0.1f);
             }
-            if (DisplayedNumber == int.Parse(match.Groups[1].Value))
+
+            ScreenBtn.OnInteract();
+            if (isSolved)
             {
-                yield return null;
-                ScreenBtn.OnInteract();
-                if(isSolved)
-                {
-                    yield return "solve";
-                }
-                else
-                {
-                    yield return "strike";
-                }
-                yield break;
+                yield return "solve";
+            }
+            else
+            {
+                yield return "strike";
             }
         }
-        yield break;
     }
 
     public IEnumerator TwitchHandleForcedSolve()
     {
-        if(isSolved)
-            yield break;
         Debug.LogFormat("[The Digit #{0}] Force solve requested by Twitch Plays.", _moduleId);
-        yield return ProcessTwitchCommand(string.Format("submit {0}", CalculatedNumber));
+        while (CalculatedNumber != DisplayedNumber)
+        {
+            UpBtn.OnInteract();
+            yield return new WaitForSeconds(.1f);
+        }
+
+        ScreenBtn.OnInteract();
+        while (!solveAnimationDone)
+        {
+            yield return true;
+        }
     }
 
     private IEnumerator Solve()
@@ -204,21 +218,24 @@ public class TheDigitScript : MonoBehaviour
         int numberOfCycles = 0;
         int initialScreenTxt = DisplayedNumber;
         interactable = false;
-        while (numberOfCycles != 60)
+        while (numberOfCycles != 100)
         {
-            yield return new WaitForSeconds(0.093f);
+            yield return new WaitForSeconds(0.05f);
             retry:
             var screentxt = Random.Range(0, 10);
-            if(screentxt.ToString() == ScreenText.text)
+            if (screentxt.ToString() == ScreenText.text)
             {
                 goto retry;
             }
+
             ScreenText.text = screentxt.ToString();
             numberOfCycles++;
         }
-        if(this.isSolved)
+
+        if (this.isSolved)
         {
             ScreenText.text = initialScreenTxt.ToString();
+            solveAnimationDone = true;
             HandleSolve();
         }
         else
@@ -230,12 +247,14 @@ public class TheDigitScript : MonoBehaviour
 
     private void HandleSolve()
     {
-        Debug.LogFormat("[The Digit #{0}] Submitted: {1}. That is correct. Module solved!", _moduleId, this.DisplayedNumber);
+        Debug.LogFormat("[The Digit #{0}] Submitted: {1}. That is correct. Module solved!", _moduleId,
+            this.DisplayedNumber);
         Module.HandlePass();
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, Module.transform);
         this.isSolved = true;
         ScreenText.color = new Color(0, 1.0f, 0);
-    }   
+    }
+
     private void HandleStrike()
     {
         Debug.LogFormat("[The Digit #{0}] Submitted: {1}. That is wrong. Strike!", _moduleId, this.DisplayedNumber);
